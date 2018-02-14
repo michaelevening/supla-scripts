@@ -1,0 +1,13 @@
+version: '3'
+
+# Use this config file if you want to collect application metrics with StatsD.
+# A container with StatsD should be connected to the same network.
+# Works perfectly for example with https://github.com/kamon-io/docker-grafana-graphite
+
+services:
+  suplascripts-db:
+    networks: [metricsnetwork]
+
+networks:
+  metricsnetwork:
+    external: true

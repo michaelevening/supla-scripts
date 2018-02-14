@@ -1,0 +1,11 @@
+.navbar-brand {
+  position: relative;
+  .navbar-version {
+    position: absolute;
+    font-size: .6em;
+    opacity: .5;
+  }
+}
+.navbar-nav a .fa {
+  margin-right: 5px;
+}

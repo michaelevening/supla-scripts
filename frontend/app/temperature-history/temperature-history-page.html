@@ -1,0 +1,47 @@
+<div class="container-fluid">
+    <h1 view-title>Historia temperatur</h1>
+    <div ng-if="$ctrl.sensors">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <date-range-picker ng-model="$ctrl.dateRange" ng-change="$ctrl.onDateRangeChange()"></date-range-picker>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-lg-2">
+                <div class="list-group sensors-list">
+                    <a class="list-group-item" ng-repeat="sensor in $ctrl.sensors"
+                       ng-class="{active: ['downloaded', 'error'].indexOf(sensor.status) >= 0}"
+                       ng-click="$ctrl.downloadDataForSensor(sensor)">
+                        <span ng-switch="sensor.status" class="pull-right">
+                            <fa ng-switch-when="error" name="times" class="text-danger" fw></fa>
+                            <fa ng-switch-when="downloaded" name="area-chart" fw></fa>
+                            <span ng-switch-when="downloading">
+                                <fa name="arrow-down" fw class="faa-falling faa-fast animated"></fa>
+                            </span>
+                            <fa ng-switch-default name="download" fw></fa>
+                        </span>
+                        {{ sensor | channelLabel }}
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10">
+                <div style="height: 700px" ng-if="$ctrl.timestamps.length">
+                    <canvas class="chart chart-line" chart-data="data"
+                            chart-labels="labels" chart-options="$ctrl.chartOptions"
+                            chart-dataset-override="datasetOverride">
+                    </canvas>
+                </div>
+                <div ng-else>
+                    <div class="label label-info">
+                        <fa name="chevron-left" fw></fa>
+                        Wybierz dane do wyświetlenia
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <loader-dots ng-else></loader-dots>
+</div>
+

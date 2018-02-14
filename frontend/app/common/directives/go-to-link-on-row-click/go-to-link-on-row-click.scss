@@ -1,0 +1,8 @@
+[go-to-link-on-row-click] {
+  &, td {
+    cursor: pointer;
+  }
+  &.list-group-item:hover {
+    background: #EEE;
+  }
+}

@@ -1,0 +1,29 @@
+<div ng-class="{disabled: $ctrl.disabled}">
+    <div class="form-group" ng-if="!$ctrl.disabled">
+        <channel-selector
+                ng-model="newChannel"
+                ng-change="$ctrl.addNewChannelToScene(newChannel)"
+                hide-ids="$ctrl.usedChannelIds"
+                functions="$ctrl.sceneableFunctions">
+        </channel-selector>
+    </div>
+    <loader-dots ng-if="$ctrl.loadingChannels"></loader-dots>
+    <div class="form-group fx-fade-left" ng-if="$ctrl.scene.length">
+        <table class="table no-margin table-width-auto">
+            <tr ng-repeat="operation in $ctrl.scene">
+                <td>
+                    <channel-action-button-selector channel="operation.channel" disabled="$ctrl.disabled"
+                                                    ng-model="operation.action"
+                                                    ng-change="$ctrl.onChange()"></channel-action-button-selector>
+                </td>
+                <td>
+                    <a ng-click="$ctrl.scene.splice($ctrl.scene.indexOf(operation), 1)" class="floating-delete-btn"
+                       ng-if="!$ctrl.disabled">
+                        <fa name="times-circle-o"></fa>
+                    </a>
+                    <channel-brief channel="operation.channel"></channel-brief>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

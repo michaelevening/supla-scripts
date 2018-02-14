@@ -1,5 +1,12 @@
-.idea/
 vendor/
-config.php
-/composer.phar
+.idea/
+node_modules/
 *.log
+public/*
+!public/img/
+!public/v1.0/
+/.*
+*.gz
+release/
+var/
+*.sql

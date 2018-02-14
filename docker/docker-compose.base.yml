@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  suplascripts:
+    container_name: ${COMPOSE_PROJECT_NAME}
+    restart: unless-stopped
+    networks: [default]
+    build: .
+    volumes:
+      - ../var:/var/www/var:z
+      - ./apache-conf:/etc/apache2/sites-available:z
+      - ../var/ssl:/etc/apache2/ssl:z
+    logging:
+      options:
+        max-size: 50m
+    depends_on:
+     - suplascripts-db
+
+  suplascripts-db:
+    container_name: ${COMPOSE_PROJECT_NAME}-db
+    restart: unless-stopped
+    image: mysql
+    networks: [default]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: suplascripts
+      MYSQL_USER: suplascripts
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+       - ${VOLUME_DATA}/mysql:/var/lib/mysql:z
+    logging:
+      options:
+        max-size: 50m
+
+networks:
+  default: ~

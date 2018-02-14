@@ -1,5 +1,0 @@
-<?php
-// channelId => expected values in details
-return [
-    'channelId' => ['hi' => true],
-];

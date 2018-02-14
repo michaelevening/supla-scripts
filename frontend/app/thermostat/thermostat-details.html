@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>
+                <fa name="{{ $ctrl.thermostat|byThermostatTarget:'thermometer':'tint' }}" fw></fa>
+                {{ $ctrl.thermostat.label }}
+            </h1>
+            <div class="form-group">
+                <div class="btn-group btn-group-justified">
+                    <a class="btn btn-default" ui-sref-active="active" ui-sref=".rooms">Pomieszczenia</a>
+                    <a class="btn btn-default" ui-sref-active="active" ui-sref=".profiles">Profile</a>
+                    <a class="btn btn-default" ui-sref-active="active" ui-sref=".preview">Podgląd</a>
+                    <a class="btn btn-default" ui-sref-active="active" ui-sref=".logs">Logi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ui-view></div>

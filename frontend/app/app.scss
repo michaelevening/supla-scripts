@@ -1,0 +1,94 @@
+@import 'styles';
+
+* {
+  -webkit-font-smoothing: antialiased !important;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  padding-bottom: 20px;
+}
+
+a, .pointer {
+  cursor: pointer;
+}
+
+.navbar {
+  border-radius: 0;
+  .navbar-toggle {
+    color: white;
+    border-color: #CCC;
+  }
+}
+
+table {
+  &.table-no-border {
+    td, th {
+      border: 0 !important;
+    }
+  }
+  &.table-no-first-border {
+    tr:first-child {
+      td, th {
+        border-top: 0;
+      }
+    }
+  }
+  &.table-fixed {
+    table-layout: fixed;
+  }
+  &.table-width-auto {
+    width: auto;
+  }
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.no-margin-top {
+  margin-top: 0 !important;
+}
+
+.margin-bottom {
+  margin-bottom: 5px;
+}
+
+copy-button {
+  display: inline-block;
+}
+
+.btn {
+  .fa-fw {
+    margin-right: 3px;
+  }
+  &.btn-break {
+    white-space: normal;
+  }
+  &.is-loading {
+    .fa {
+      animation: fa-spin 2s infinite linear;
+      &:before {
+        content: "\f1ce"; // circle-o-notch
+      }
+    }
+  }
+}
+
+.text-muted {
+  color: inherit;
+  opacity: .7;
+}
+
+.alpha60 {
+  opacity: .6;
+}
+
+.swal2-modal h2 {
+  line-height: 35px;
+}

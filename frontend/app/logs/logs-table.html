@@ -1,0 +1,41 @@
+<loader-dots ng-if="!$ctrl.logs"></loader-dots>
+<table ng-else class="table table-striped">
+    <thead>
+    <tr>
+        <th>Kiedy?</th>
+        <th ng-if="!$ctrl.entityId">Moduł</th>
+        <th ng-if="!$ctrl.entityId">Podmiot</th>
+        <th>Treść</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="entry in $ctrl.logs">
+        <td>
+            <date-with-tooltip date="entry.createdAt"></date-with-tooltip>
+        </td>
+        <td ng-if="!$ctrl.entityId">{{ entry.module }}</td>
+        <td ng-if="!$ctrl.entityId">
+            <span ng-if="entry.entityId" ng-switch="entry.module">
+                <a ng-switch-when="thermostat"
+                   ui-sref="thermostat.preview({id: entry.entityId})">
+                    Termostat
+                </a>
+                <a ng-switch-when="voice"
+                   ui-sref="scenes.details({id: entry.entityId})">
+                    Komenda głosowa
+                </a>
+                <a ng-switch-when="scene"
+                   ui-sref="scenes.details({id: entry.entityId})">
+                    Scena
+                </a>
+                <a ng-switch-when="notification"
+                   ui-sref="notifications.details({id: entry.entityId})">
+                    Powiadomienie
+                </a>
+            </span>
+            <span ng-else>n.d.</span>
+        </td>
+        <td>{{ entry.data }}</td>
+    </tr>
+    </tbody>
+</table>
