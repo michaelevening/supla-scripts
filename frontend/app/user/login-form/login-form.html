@@ -51,3 +51,16 @@
     </div>
 </form>
 
+<div class="form-group">
+    <div class="text-center" ng-class="{'form-group': $ctrl.showDontRememberHint}">
+        <a ng-click="$ctrl.showDontRememberHint = true" ng-if="!$ctrl.showDontRememberHint">Nie pamiętam hasła</a>
+    </div>
+    <div class="alert alert-info fx-fade-down no-margin" ng-if="$ctrl.showDontRememberHint">
+        <fa name="key" fw class="pull-right" size="2"></fa>
+        <p>
+            Jeśli nie pamiętasz hasła do swojego konta,
+            <a ui-sref="login({mode: 'token'})">zaloguj się przy użyciu prywatnego tokena dostępowego</a>.
+        </p>
+    </div>
+</div>
+

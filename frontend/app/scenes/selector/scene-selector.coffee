@@ -4,23 +4,41 @@ angular.module('supla-scripts').component 'sceneSelector',
     disabled: '<'
   require:
     ngModel: 'ngModel'
-  controller: (Channels, $scope, $q, CHANNEL_AVAILABLE_ACTIONS) ->
+  controller: (Channels, Thermostats, Scenes, $scope, $q, CHANNEL_AVAILABLE_ACTIONS) ->
     new class
       scene: []
 
       $onInit: ->
+        @sequence = Math.round(Math.random() * 100000)
         @sceneableFunctions = Object.keys(CHANNEL_AVAILABLE_ACTIONS)
         @ngModel.$render = =>
           sceneStrings = (@ngModel.$viewValue or '').split('|').filter((e) -> !!e)
-          promises = sceneStrings.map((sceneString) -> Channels.get(sceneString.split(';')[0]))
+          promises = sceneStrings.map (sceneString) ->
+            parts = sceneString.split(';')
+            if parts[1].indexOf('thermostat') == 0
+              Thermostats.one(parts[0]).withHttpConfig(skipErrorHandler: yes).get(simple: yes).catch(() => undefined)
+            else if parts[1].indexOf('scene') == 0
+              Scenes.one(parts[0]).withHttpConfig(skipErrorHandler: yes).get().catch(() => undefined)
+            else
+              Channels.get(parts[0])
           @loadingChannels = yes
-          $q.all(promises).then (channels) =>
+          $q.all(promises).then (entities) =>
             @loadingChannels = no
             @scene = sceneStrings.map (sceneString, index) =>
-              channel: channels[index]
-              action: sceneString.split(';')[1]
+              parts = sceneString.split(';')
+              model = {action: parts[1]}
+              if parts[1].indexOf('thermostat') == 0
+                model.thermostat = entities[index]
+              else if parts[1].indexOf('scene') == 0
+                model.scene = entities[index]
+              else
+                model.channel = entities[index]
+              model
+            @scene = @scene.filter((model) -> model.thermostat or model.scene or model.channel)
         $scope.$watch '$ctrl.scene.length', =>
-          @usedChannelIds = @scene.map((o) -> o.channel.id)
+          @usedChannelIds = @scene.filter((o) -> o.channel).map((o) -> o.channel.id)
+          @usedThermostatIds = @scene.filter((o) -> o.thermostat).map((o) -> o.thermostat.id)
+          @usedSceneIds = @scene.filter((o) -> o.scene).map((o) -> o.scene.id)
           @onChange()
 
       addNewChannelToScene: (newChannelId) ->
@@ -28,8 +46,14 @@ angular.module('supla-scripts').component 'sceneSelector',
           Channels.get(newChannelId).then (channel) =>
             @scene.push({channel})
 
+      addNewThermostatToScene: (thermostat) ->
+        @scene.push({thermostat}) if (thermostat)
+
+      addNewSceneToScene: (scene) ->
+        @scene.push({scene, action: 'sceneExecute'}) if (scene)
+
       onChange: ->
         if not @disabled
           operationsWithActions = @scene.filter((operation) -> !!operation.action)
-          sceneString = operationsWithActions.map((operation) -> "#{operation.channel.id};#{operation.action}").join('|')
+          sceneString = operationsWithActions.map((operation) -> "#{(operation.channel or operation.thermostat or operation.scene).id};#{operation.action}").join('|')
           @ngModel.$setViewValue(sceneString)

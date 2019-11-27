@@ -64,6 +64,14 @@ class UserAndUrlAwareLogger implements LoggerInterface {
         return $this->toCustomFile('thermostat');
     }
 
+    public function toQuotaLog(): LoggerInterface {
+        return $this->toCustomFile('quota');
+    }
+
+    public function toOauthLog(): LoggerInterface {
+        return $this->toCustomFile('oauth');
+    }
+
     public function emergency($message, array $context = []) {
         $this->logger->emerg($message, $this->buildContext($context));
     }

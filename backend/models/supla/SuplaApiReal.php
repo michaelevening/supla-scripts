@@ -14,24 +14,28 @@ class SuplaApiReal extends SuplaApi {
 
     protected function __construct(User $user) {
         $apiCredentials = $user->getApiCredentials();
-        $this->client = new SuplaApiClient($apiCredentials, false, false, false);
+        $this->client = new SuplaApiClientWithOAuthSupport($user, $apiCredentials, false, false, false);
     }
 
     public function getDevices(): array {
         if (!$this->devices) {
-            $response = $this->client->ioDevices();
+            $response = $this->client->remoteRequest(null, '/api/v2.4.0/iodevices?include=channels,connected,state', 'GET', true);
+            if ($response === false) {
+                $response = $this->client->remoteRequest(null, '/api/v2.3.0/iodevices?include=channels,connected,state', 'GET', true);
+            }
             $this->handleError($response);
-            $this->devices = $response->iodevices;
+            $this->devices = $response;
         }
         return $this->devices;
     }
 
     public function getChannelWithState(int $channelId) {
         foreach ($this->getDevices() as $device) {
-            foreach ($device->channels as $channel) {
+            foreach ($device->channels as &$channel) {
                 if ($channel->id == $channelId) {
                     $state = $this->getChannelState($channelId);
-                    return (object)array_merge((array)$channel, (array)$state);
+                    $channel->state = $state;
+                    return $channel;
                 }
             }
         }
@@ -41,6 +45,9 @@ class SuplaApiReal extends SuplaApi {
     public function getChannelState(int $channelId) {
         $state = $this->client->channel($channelId);
         $this->handleError($state);
+        if (isset($state->enabled)) {
+            unset($state->enabled);
+        }
         return $state;
     }
 
@@ -84,10 +91,13 @@ class SuplaApiReal extends SuplaApi {
         } else {
             $color = hexdec($color);
         }
-        $result = $this->client->channelSetRGBW($channelId, $color, $colorBrightness, $brightness);
-        if ($result === false) {
-            $result = $this->client->channelSetRGB($channelId, $color, $colorBrightness);
-        }
+        $data = [
+            'action' => 'SET_RGBW_PARAMETERS',
+            'color' => $color,
+            'color_brightness' => $colorBrightness,
+            'brightness' => $brightness,
+        ];
+        $result = $this->client->remoteRequest($data, '/api/v2.3.0/channels/' . $channelId, 'PATCH', true);
         return $result !== false;
     }
 
@@ -126,7 +136,7 @@ class SuplaApiReal extends SuplaApi {
     }
 
     private function handleError($response) {
-        if (!$response) {
+        if (!$response && $response != []) {
             throw new SuplaApiException($this->client);
         }
     }

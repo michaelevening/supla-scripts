@@ -23,10 +23,10 @@
                             <div class="list-group">
                                 <div class="list-group-item dashboard-channel clearfix"
                                      ng-class="{
-                                        'is-on': channel.on,
-                                        'is-off': channel.on === false,
-                                        'is-closed': channel.hi,
-                                        'is-opened': channel.hi === false,
+                                        'is-on': channel.state.on,
+                                        'is-off': channel.state.on === false,
+                                        'is-closed': channel.state.hi,
+                                        'is-opened': channel.state.hi === false,
                                      }"
                                      ng-repeat="channel in device.channels"
                                      ng-hide="!channel.function.id">
@@ -35,6 +35,15 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="jumbotron" ng-if="$ctrl.devices && $ctrl.devices.length ===0">
+                    <h1>Twoje konto SUPLA jest PUSTE!</h1>
+                    <h3>Dodaj jakieś urządzenie do Twojego konta.</h3>
+                    <h3>Wszystko co <span style="text-decoration: line-through">otwarte</span> pełne jest lepsze :-)</h3>
+                    <div class="text-center">
+                        <img src="https://fracz.github.io/supla-noc-informatyka-1.1/resources/images/040-openbetter.JPG" alt="OPEN-BETTER"
+                             style="max-width: 500px">
                     </div>
                 </div>
             </div>

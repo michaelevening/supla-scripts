@@ -17,12 +17,15 @@ class SuplaScriptsManager extends Application {
             new DispatchTimeScenesCommand(),
             new DispatchTimeScenesExecutionCommand(),
             new DisplayLogoCommand(),
-            new FixCacheFilesOwnerCommand(),
             new GenerateEncryptionKeyCommand(),
             new InitializeApplicationCommand(),
             new MetricsReleaseCommand(),
             new SendMetricsGaugesCommand(),
             new MigrateDbCommand(),
+            new ClearRequestQuotaLogsCommand(),
+            new OauthRefreshTokensCommand(),
+            new ClearClientRegistrationCodesCommand(),
+            new ClearInvalidUserTokensCommand(),
         ]);
     }
 }

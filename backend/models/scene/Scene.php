@@ -6,6 +6,7 @@ use Assert\Assertion;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Uuid\Uuid;
+use suplascripts\models\BelongsToUser;
 use suplascripts\models\Model;
 use suplascripts\models\User;
 
@@ -14,22 +15,24 @@ use suplascripts\models\User;
  * @property string $label
  * @property string[] $actions
  * @property string $feedback
+ * @property string $condition
  * @property string[] $voiceTriggers
  * @property \DateTime $lastUsed
  * @property User $user
  */
-class Scene extends Model {
+class Scene extends Model implements BelongsToUser {
     const TABLE_NAME = 'scenes';
     const SLUG = 'slug';
     const LABEL = 'label';
     const ACTIONS = 'actions';
     const FEEDBACK = 'feedback';
+    const CONDITION = 'condition';
     const VOICE_TRIGGERS = 'voiceTriggers';
     const LAST_USED = 'lastUsed';
     const USER_ID = 'userId';
 
     protected $dates = [self::LAST_USED];
-    protected $fillable = [self::LABEL, self::ACTIONS, self::FEEDBACK, self::VOICE_TRIGGERS];
+    protected $fillable = [self::LABEL, self::ACTIONS, self::FEEDBACK, self::VOICE_TRIGGERS, self::CONDITION];
     protected $jsonEncoded = [self::ACTIONS, self::VOICE_TRIGGERS];
 
     public function user(): BelongsTo {
@@ -70,8 +73,9 @@ class Scene extends Model {
         }
         Assertion::keyExists($attributes, self::LABEL, 'Scene must have a label.');
         Assertion::notBlank($attributes[self::LABEL], 'Scene must have a label.');
+        $actions = array_filter($attributes[self::ACTIONS] ?? []);
         Assertion::true(
-            ($attributes[self::FEEDBACK] ?? false) || ($attributes[self::ACTIONS] ?? false),
+            ($attributes[self::FEEDBACK] ?? false) || $actions,
             'Scene must have either feedback or actions.'
         );
         if ($attributes[self::ACTIONS]) {

@@ -22,15 +22,15 @@ class JwtToken {
     public function basedOnPreviousToken($currentToken): JwtToken {
         return $this
             ->user($currentToken->user)
-            ->rememberMe($currentToken->rememberMe);
+            ->rememberMe($currentToken->rememberMe ?? false);
     }
 
     /** @param User|null $user */
-    public function user($user): JwtToken {
+    public function user($user, string $username = null): JwtToken {
         if ($user) {
             $this->tokenData['user'] = [
                 'id' => $user->id,
-                'username' => $user->username,
+                'username' => $user->username ?: $username,
             ];
             if (method_exists($user, 'hasExpiredPassword')) {
                 if ($user->hasExpiredPassword()) {

@@ -7,18 +7,16 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FixCacheFilesOwnerCommand extends Command {
+class ClearRequestQuotaLogsCommand extends Command {
+
     protected function configure() {
         $this
-            ->setName('cache:fix-owner')
-            ->setDescription('Sets cache files owner to desired one.');
+            ->setName('clear:request-quota-logs')
+            ->setDescription('Remove old request quota logs from database.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $path = realpath(Application::VAR_PATH . '/cache');
-        var_dump($path);
-        if ($path) {
-            system('chown -R www-data:www-data ' . $path);
-        }
+        Application::getInstance()->db->getConnection()
+            ->statement('DELETE FROM api_quota WHERE minute_timestamp < FLOOR(UNIX_TIMESTAMP() / 60) - 10');
     }
 }

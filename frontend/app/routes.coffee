@@ -19,12 +19,12 @@ angular.module('supla-scripts')
     template: '<home-view></home-view>'
 
   .state 'login',
-    url: '/login?register'
+    url: '/login?mode'
     template: '<login-view></login-view>'
 
-  .state 'register',
-    url: '/register'
-    template: '<register-view></register-view>'
+  .state 'oauthAuthorize',
+    url: '/authorize?code&state'
+    template: '<oauth-authorize-page></oauth-authorize-page>'
 
   .state 'dashboard',
     url: '/dashboard'
@@ -105,14 +105,19 @@ angular.module('supla-scripts')
     template: '<account-details user="user"></account-details>'
     controller: ($scope, user) -> $scope.user = user
 
-  .state 'account.api',
-    url: '/api'
-    template: '<user-api-credentials user="user"></user-api-credentials>'
-    controller: ($scope, user) -> $scope.user = user
+#  .state 'account.api',
+#    url: '/api'
+#    template: '<user-api-credentials user="user"></user-api-credentials>'
+#    controller: ($scope, user) -> $scope.user = user
 
   .state 'account.timezone',
     url: '/timezone'
     template: '<user-timezone user="user"></user-timezone>'
+    controller: ($scope, user) -> $scope.user = user
+
+  .state 'account.automate',
+    url: '/automate'
+    template: '<user-automate-settings user="user"></user-automate-settings>'
     controller: ($scope, user) -> $scope.user = user
 
   .state 'account.changePassword',
@@ -159,6 +164,6 @@ angular.module('supla-scripts').decorator '$state', ($delegate) ->
 
 angular.module('supla-scripts').run ($rootScope, Token, $state) ->
   $rootScope.$on '$stateChangeStart', (event, toState) ->
-    if not Token.getRememberedToken() and toState.name not in ['login', 'register', 'thermostatPreview', 'notFound']
+    if not Token.getRememberedToken() and toState.name not in ['login', 'register', 'thermostatPreview', 'notFound', 'oauthAuthorize']
       event.preventDefault()
       $state.go('login')

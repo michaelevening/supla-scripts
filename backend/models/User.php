@@ -12,10 +12,12 @@ use suplascripts\models\thermostat\Thermostat;
 
 /**
  * @property int $id
+ * @property string $shortUniqueId
  * @property string $username
  * @property string $password
  * @property string $apiCredentials
  * @property \DateTime $lastLoginDate
+ * @property \DateTime $tokenExpirationTime
  * @property string $timezone
  * @property Scene[] $scenes
  * @property Client[] $clients
@@ -25,11 +27,13 @@ class User extends Model {
 
     const TABLE_NAME = 'users';
     const USERNAME = 'username';
+    const SHORT_UNIQUE_ID = 'shortUniqueId';
     const PASSWORD = 'password';
     const API_CREDENTIALS = 'apiCredentials';
     const LAST_LOGIN_DATE = 'lastLoginDate';
     const LAST_VOICE_COMMAND = 'lastVoiceCommand';
     const TIMEZONE = 'timezone';
+    const TOKEN_EXPIRATION_TIME = 'tokenExpirationTime';
 
     protected $dates = [self::LAST_LOGIN_DATE];
 
@@ -39,20 +43,17 @@ class User extends Model {
 
     /** @return User|null */
     public static function findByUsername(string $username) {
-        $user = self::where(self::USERNAME, $username)->first();
-        if ($user && $user->deleted) {
-            $user = null;
-        }
-        return $user;
+        return self::where(self::USERNAME, $username)->first();
     }
 
     public static function create(array $attributes = []) {
         $user = new self([]);
-        list($username, $attributes) = $user->validate($attributes);
-        $user->username = trim($username);
+        $attributes = $user->validate($attributes);
+        $user->username = trim($attributes[self::USERNAME] ?? '') ?: null;
+        $user->shortUniqueId = $attributes[self::SHORT_UNIQUE_ID] ?? null;
         $user->timezone = $attributes[self::TIMEZONE] ?? date_default_timezone_get();
         $user->setApiCredentials($attributes[self::API_CREDENTIALS]);
-        $user->setPassword($attributes[self::PASSWORD]);
+        $user->setPassword($attributes[self::PASSWORD] ?? null);
         $user->save();
         return $user;
     }
@@ -74,41 +75,48 @@ class User extends Model {
     }
 
     public function setPassword($plainPassword) {
-        self::validatePlainPassword($plainPassword);
-        $this->password = password_hash($plainPassword, PASSWORD_DEFAULT);
+        if ($plainPassword) {
+            self::validatePlainPassword($plainPassword);
+            $this->password = password_hash($plainPassword, PASSWORD_DEFAULT);
+        }
     }
 
     public function isPasswordValid($plainPassword): bool {
-        $valid = password_verify($plainPassword, $this->password);
-        if (!$valid) {
-            $apiSecret = $this->getApiCredentials()['secret'] ?? '';
-            if ($apiSecret) {
-                return strcmp($apiSecret, $plainPassword) === 0;
-            }
-        }
-        return $valid;
+        return password_verify($plainPassword, $this->password);
     }
 
     public function validate(array $attributes = null): array {
         if (!$attributes) {
             $attributes = $this->getAttributes();
         }
-        Assertion::notEmptyKey($attributes, self::USERNAME);
-        Assertion::notEmptyKey($attributes, self::PASSWORD);
         Assertion::notEmptyKey($attributes, self::API_CREDENTIALS);
-        $username = $attributes[self::USERNAME];
-        self::validateUsername($username);
-        self::validatePlainPassword($attributes[self::PASSWORD]);
-        if (!$this->id) {
-            self::validateUsernameUnique($username);
+        if (!isset($attributes[self::SHORT_UNIQUE_ID])) {
+            Assertion::notEmptyKey($attributes, self::USERNAME);
+            $username = $attributes[self::USERNAME];
+            self::validateUsername($username);
+            Assertion::notEmptyKey($attributes, self::PASSWORD);
+            self::validatePlainPassword($attributes[self::PASSWORD]);
+            if (!$this->id) {
+                self::validateUsernameUnique($username);
+            }
         }
-        return [$username, $attributes];
+        return $attributes;
     }
 
     public function setApiCredentials(array $apiCredentials) {
-        $apiCredentials['server'] = preg_replace('#^https?://#', '', $apiCredentials['server']);
+        if (isset($apiCredentials['server'])) {
+            $apiCredentials['server'] = preg_replace('#^https?://#', '', $apiCredentials['server']);
+        }
         $this->apiCredentials = json_encode($apiCredentials);
         SuplaApi::getInstance($this)->getDevices();
+        if (isset($apiCredentials['expires_in']) && $apiCredentials['expires_in'] > 300) {
+            $expirationTime = new \DateTime();
+            $expirationTime->setTimestamp(time() + $apiCredentials['expires_in']);
+            $expirationTime->setTimezone(new \DateTimeZone('UTC'));
+            $this->tokenExpirationTime = $expirationTime;
+        } else {
+            $this->tokenExpirationTime = null;
+        }
     }
 
     public function getApiCredentials(): array {

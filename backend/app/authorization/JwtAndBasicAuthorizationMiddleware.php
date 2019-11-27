@@ -28,9 +28,10 @@ class JwtAndBasicAuthorizationMiddleware {
             'secure' => false, // do not force SSL!
             'passthrough' => [
                 '/api/info',
+                '/api/oauth',
                 '/api/scenes/public',
-                '/api/time',
                 '/api/tokens/new',
+                '/api/tokens/personal',
                 '/api/tokens/client',
                 '/api/thermostats/preview',
                 '/api/users/register',
@@ -39,7 +40,7 @@ class JwtAndBasicAuthorizationMiddleware {
 
         $container = $this->getApp()->getContainer();
 
-        $this->jwtAuthentication = new JwtAuthentication(array_merge($options, [
+        $this->jwtAuthentication = new JwtWithBodyAuthentication(array_merge($options, [
             'secret' => $this->getApp()->getSetting('jwt')['key'],
             'algorithm' => ['HS256'],
             'callback' => function ($request, $response, $arguments) use ($container) {

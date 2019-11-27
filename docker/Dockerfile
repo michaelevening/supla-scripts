@@ -1,4 +1,4 @@
-FROM php:7.0.27-apache
+FROM php:7.1.27-apache-stretch
 
 WORKDIR /var/www
 
@@ -15,6 +15,7 @@ RUN apt-get update \
       supervisor \
       cron \
       wget \
+      zlib1g-dev \
     && update-ca-certificates \
     && docker-php-ext-install \
       pdo_mysql \
@@ -38,7 +39,7 @@ RUN { \
     && chmod 0644 /etc/cron.d/suplascripts
 
 
-ENV SUPLA_SCRIPTS_VERSION=2.7.5
+ENV SUPLA_SCRIPTS_VERSION=3.2.0
 #COPY supla-scripts-$SUPLA_SCRIPTS_VERSION.tar.gz ./
 RUN wget -nc https://github.com/fracz/supla-scripts/releases/download/v${SUPLA_SCRIPTS_VERSION}/supla-scripts-${SUPLA_SCRIPTS_VERSION}.tar.gz \
     && tar -xzf supla-scripts-${SUPLA_SCRIPTS_VERSION}.tar.gz -C . \

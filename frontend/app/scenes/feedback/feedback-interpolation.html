@@ -1,6 +1,22 @@
-<div ng-class="{'feedback-fetching': $ctrl.fetching}">
+<div ng-class="{'feedback-fetching': $ctrl.fetching}" ng-if="$ctrl.feedback">
     <span class="pull-right fx-fade-right" ng-if="$ctrl.fetching">
         <loader-dots-small></loader-dots-small>
     </span>
-    {{ $ctrl.interpolatedFeedback }}
+    <div ng-if="$ctrl.condition">
+        <div ng-if="$ctrl.fetching && !$ctrl.refreshing" class="alert alert-default">
+            Sprawdzam warunek...
+        </div>
+        <div ng-else-if="$ctrl.error" class="alert alert-danger">
+            {{ $ctrl.interpolatedFeedback }}
+        </div>
+        <div ng-else-if="$ctrl.conditionMet" class="alert alert-success">
+            <fa name="check" fw></fa>
+            Warunek jest aktualnie spełniony.
+        </div>
+        <div ng-else class="alert alert-warning">
+            <fa name="times" fw></fa>
+            Warunek nie jest aktualnie spełniony.
+        </div>
+    </div>
+    <div ng-else ng-class="{'text-danger': $ctrl.error}">{{ $ctrl.interpolatedFeedback }}</div>
 </div>

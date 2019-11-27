@@ -6,6 +6,7 @@ use Assert\Assertion;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Uuid\Uuid;
+use suplascripts\models\BelongsToUser;
 use suplascripts\models\Model;
 use suplascripts\models\User;
 
@@ -16,10 +17,11 @@ use suplascripts\models\User;
  * @property string $target
  * @property mixed $roomsState
  * @property mixed $devicesState
+ * @property int $failureCount
  * @property \DateTime $nextProfileChange
  * @property User $user
  */
-class Thermostat extends Model {
+class Thermostat extends Model implements BelongsToUser {
 
     const TABLE_NAME = 'thermostats';
     const LABEL = 'label';
@@ -29,6 +31,7 @@ class Thermostat extends Model {
     const DEVICES_STATE = 'devicesState';
     const NEXT_PROFILE_CHANGE = 'nextProfileChange';
     const ACTIVE_PROFILE_ID = 'activeProfileId';
+    const FAILURE_COUNT = 'failureCount';
     const USER_ID = 'userId';
     const TARGET = 'target';
 

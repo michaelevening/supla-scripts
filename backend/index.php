@@ -26,10 +26,10 @@ $startTime = microtime(true);
 
 $app = new Application();
 $app->group('/api', function () use ($app) {
-    $app->get('/time', SystemController::class . ':getTime');
     $app->get('/info', SystemController::class . ':getInfo');
     $app->group('/tokens', function () use ($app) {
-        $app->post('/new', TokensController::class . ':createToken');
+        $app->post('/new', TokensController::class . ':oauthAuthenticate');
+        $app->patch('/personal', TokensController::class . ':checkPersonalAccessToken');
         $app->post('/client', TokensController::class . ':createTokenForClient');
         $app->put('', TokensController::class . ':refreshToken');
     });
@@ -103,6 +103,9 @@ $app->group('/api', function () use ($app) {
 
     $app->group('/clients', function () use ($app) {
         $app->get('', ClientsController::class . ':getList');
+        $app->post('', ClientsController::class . ':post');
+        $app->post('/registration-codes', ClientsController::class . ':postRegistrationCode');
+        $app->get('/{id}', ClientsController::class . ':get');
         $app->put('/{id}', ClientsController::class . ':put');
         $app->delete('/{id}', ClientsController::class . ':delete');
     });
