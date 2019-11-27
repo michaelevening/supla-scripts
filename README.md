@@ -1,49 +1,40 @@
-# supla-scripts
- 
- [![Latest release](https://img.shields.io/github/release/fracz/supla-scripts.svg)](https://github.com/fracz/supla-scripts/releases/latest) 
- [![Build Status](https://travis-ci.org/fracz/supla-scripts.svg?branch=master)](https://travis-ci.org/fracz/supla-scripts)
- [![Donations Badge](https://yourdonation.rocks/images/badge.svg)](https://www.paypal.me/fracz/10)
+container-apps
+=========
 
-[SUPLA](https://supla.org) on steroids!
+An image and application list for [QNAP Container Station](https://www.qnap.com/solution/container_station/en-us/).
 
-supla-scripts uses [SUPLA API](https://github.com/SUPLA/api-client-php) to bring
-new features into your SUPLA account, today!
 
-## Features
+Using your own image list
+-------------------------
 
-* thermostat
-* voice commands
-* notifications
-* scenes
-* delayed scens
-* widgets (witch scenes' direct urls)
-* ability to check and change channel's state via web browser
-* temperature history charts
+1. Click the “Fork” button in the upper-right corner of the GitHub interface.
+2. Add your image and application information.
+3. Change your preference application repository settings in Container Station.
 
-## Demo videos
 
-### Voice commands
+Contributing
+------------
 
-[![SUPLA Voice control - Instructions](https://img.youtube.com/vi/YOvxetkskmc/0.jpg)](https://www.youtube.com/watch?v=YOvxetkskmc)
+Want to help add more useful images and applications? Check out our [contributing documentation](https://github.com/qnap-dev/container-apps/blob/master/CONTRIBUTING.md).
 
-### Scenes & widgets
-[![SUPLA Scenes - Instructions](https://img.youtube.com/vi/m9JipPYhm6I/0.jpg)](https://www.youtube.com/watch?v=m9JipPYhm6I)
+These instructions may not be complete, please inform us if we should update anything. Better yet, submit a PR and improve them yourself.
 
-### Notifications
-[![SUPLA Notifications - Instructions](https://img.youtube.com/vi/cTxzOcThwqU/0.jpg)](https://www.youtube.com/watch?v=cTxzOcThwqU)
+Reporting Issues
+--------------------
 
-### Scene Launcher
-[![SUPLA Scene Launcher - Instructions](https://img.youtube.com/vi/bvfTRKj-xrM/0.jpg)](https://youtu.be/bvfTRKj-xrM)
+Before opening any issue, please search for existing issues and read the [Issue Guidelines](https://github.com/necolas/issue-guidelines), written by [Nicolas Gallagher](https://github.com/necolas). After that if you find a bug or want to make feature request related to container-apps, please open a new issue.
 
-## Installation
+Please report *Container Station* issues in [QNAP Helpdesk](https://helpdesk.qnap.com/).
 
-There are two ways to install supla-scripts.
 
-* [using Docker](https://github.com/fracz/supla-scripts/blob/master/docs/Installation-docker.md)
-* [using a local MySQL database and local server](https://github.com/fracz/supla-scripts/blob/master/docs/Installation-classic.md)
 
-## Where is v1.0?
+Related Projects
+----------------
 
-The first version of the scripts (without GUI and multi-account support)
-is available on [`v1.0` branch](https://github.com/fracz/supla-scripts/tree/v1.0).
+* [Docker](https://github.com/docker/docker): Container Station using v1.11
+* [Docker Compose](https://github.com/docker/compose): Container Station using v1.7
 
+
+License
+-------
+Container-apps is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE). for full license text.
