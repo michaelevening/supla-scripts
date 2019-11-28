@@ -1,14 +1,4 @@
-vendor/
-.idea/
-node_modules/
-*.log
-public/*
-!public/img/
-!public/v1.0/
-!public/helpers/
-/.*
-*.gz
-release/
+.idea
 var/
-*.sql
-ą
+ssl/
+.env

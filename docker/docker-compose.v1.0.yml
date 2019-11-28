@@ -1,6 +1,0 @@
-version: '3'
-
-services:
-  suplascripts:
-    volumes:
-      - ../public/v1.0:/var/www/public/v1.0

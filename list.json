@@ -6,7 +6,18 @@
     "icon": "https://secure.gravatar.com/avatar/198763e6f37c4890ad7bd07fd68fa708.jpg?s=80&r=g&d=mm",
     "displayName": "SUPLA Cloud",
     "name": "supla",
-    "version": "2.3.12",
+    "version": "2.3.16",
+    "location": "https://hub.docker.com/r/supla/supla-cloud/",
+    "type": "app"
+  },
+  {
+     "description": "Connect your home with SUPLA.",
+    "repository": "dockerhub",
+    "arch": "armhf",
+    "icon": "https://secure.gravatar.com/avatar/198763e6f37c4890ad7bd07fd68fa708.jpg?s=80&r=g&d=mm",
+    "displayName": "SUPLA Cloud",
+    "name": "supla-arm32v7",
+    "version": "2.3.16",
     "location": "https://hub.docker.com/r/supla/supla-cloud/",
     "type": "app"
   }
